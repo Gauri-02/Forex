@@ -15,6 +15,8 @@
 npm install
 ```
 
+> **_NOTE:_** It it throws error then try: npm install --legacy-peer-deps
+
 ## Usage
 
 ```sh
@@ -31,10 +33,10 @@ npm run test
 
 👤 **PICT Team 1**
 
-
 ## Show your support
 
 Give a ⭐️ if this project helped you!
 
-***
+---
+
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
