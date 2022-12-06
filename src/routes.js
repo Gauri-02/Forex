@@ -12,7 +12,7 @@ import UploadData from "views/admin/UploadData";
 
 const routes = [
     {
-        name: "Main Dashboard",
+        name: "FOREX",
         layout: "/admin",
         path: "/default",
         icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,

@@ -29,6 +29,20 @@ npm run start
 npm run test
 ```
 
+## Screenshots
+
+# Monthly Exchange Rates
+
+![monthlyExchangeRates](Screenshots/Monthly%20Exchange%20rates.png)
+
+# Half Yearly Exchange Rates
+
+![monthlyExchangeRates](Screenshots/Half%20Yearly%20rates.png)
+
+# Upload CSV file
+
+![monthlyExchangeRates](Screenshots/Weekly%20exchange%20rates.png)
+
 ## Author
 
 👤 **PICT Team 1**
