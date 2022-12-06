@@ -24,6 +24,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Flex,
   FormLabel,
   Icon,
@@ -73,8 +74,35 @@ export default function UserReports() {
   const [dates, setDates] = useState([])
   const [prices, setPrices] = useState([])
 
+  const [aggregates, setAggregates] = useState({
+    highest: 0,
+    lowest: 0,
+    avg: 0
+  })
+
   useEffect(() => {
-    console.log("Byee: ", prices)
+    console.log("In here: ", prices)
+    if(prices.length > 0) {
+      let max = 0, min = 99999
+    let sum = 0
+    for(let i = 0; i < prices.length; i++) {
+      sum += parseFloat(prices[i][1])
+      if(parseFloat(prices[i][1]) < min) {
+        console.log("MIN: ", prices[i][1])
+        min = prices[i][1]
+      }
+      if(parseFloat(prices[i][1]) > max) {
+        console.log("MAX: ", prices[i][1])
+        max = prices[i][1]
+      }
+    }
+    console.log("SUM: ", sum)
+    setAggregates({
+      highest: max,
+      lowest: min,
+      avg: (sum/prices.length).toFixed(2)
+    })
+    }
   }, [prices])
 
   return (
@@ -97,7 +125,7 @@ export default function UserReports() {
             />
           }
           name='Highest'
-          value='$350.4'
+          value={aggregates.highest > 0 ? aggregates.highest : "No Target Set"}
         />
         <MiniStatistics
           startContent={
@@ -111,7 +139,7 @@ export default function UserReports() {
             />
           }
           name='Lowest'
-          value='$350.4'
+          value={aggregates.lowest < 99999 ? aggregates.lowest : "No Target Set"}
         />
         <MiniStatistics
           startContent={
@@ -124,23 +152,23 @@ export default function UserReports() {
               }
             />
           }
-          name='Total Projects'
-          value='2935'
+          name='Avg'
+          value={aggregates.avg > 0 ? aggregates.avg : "No Target Set"}
         />
       </SimpleGrid>
 
-      <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
+      <SimpleGrid columns={{ base: 1, md: 1, xl: 1 }} gap='20px' mb='20px'>
         <TotalSpent prices={prices} dates={dates} />
-        <WeeklyRevenue />
+        {/* <WeeklyRevenue /> */}
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
+      {/* <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
         <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
           <DailyTraffic />
           <PieCard />
         </SimpleGrid>
-      </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
+      </SimpleGrid> */}
+      {/* <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
         <ComplexTable
           columnsData={columnsDataComplex}
           tableData={tableDataComplex}
@@ -149,7 +177,7 @@ export default function UserReports() {
           <Tasks />
           <MiniCalendar h='100%' minW='100%' selectRange={false} />
         </SimpleGrid>
-      </SimpleGrid>
+      </SimpleGrid> */}
     </Box>
   );
 }

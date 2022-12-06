@@ -9,20 +9,23 @@ import { Button, Icon } from '@chakra-ui/react'
 import { CgColorPicker } from 'react-icons/cg'
 import { ImFontSize } from 'react-icons/im'
 import { MdPalette } from 'react-icons/md'
+import { useColorMode } from '@chakra-ui/react';
 
 export function ThemeEditor(props) {
     return (
         <ThemeEditorContainer>
           <ThemeEditorButton {...props} />
-          <ThemeEditorDrawer hideUpgradeToPro>
-            <ThemeEditorColors icon={CgColorPicker} title="Colors" />
-            <ThemeEditorFontSizes icon={ImFontSize} title="Font Sizes" />
+          {/* <Theme */}
+          <ThemeEditorDrawer hideUpgradeToPro hideCredits>
+            {/* <ThemeEditorColors icon={CgColorPicker} title="Colors" /> */}
+            {/* <ThemeEditorFontSizes icon={ImFontSize} title="Font Sizes" /> */}
           </ThemeEditorDrawer>
         </ThemeEditorContainer>
       )
 }
 
 function ThemeEditorButton({ onOpen, navbarIcon, ...rest }) {
+  const {colorsMode, toggleColorMode} = useColorMode()
   return (
     <Button
         variant='no-hover'
@@ -33,7 +36,7 @@ function ThemeEditorButton({ onOpen, navbarIcon, ...rest }) {
         h='18px'
         w='max-content'
         _focus={{ boxShadow: 'none' }}
-        onClick={onOpen}
+        onClick={toggleColorMode}
         {...rest}
     >
         <Icon

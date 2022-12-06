@@ -16,16 +16,151 @@ import { MdBarChart, MdOutlineCalendarToday } from "react-icons/md";
 // Assets
 import { RiArrowUpSFill } from "react-icons/ri";
 import { useEffect } from 'react';
+import { useState } from 'react';
 import {
   lineChartDataTotalSpent,
   lineChartOptionsTotalSpent,
 } from "variables/charts";
+import ReactApexChart from "react-apexcharts";
+import ApexCharts from "apexcharts";
 
 export default function TotalSpent({prices, dates, ...props}) {
   const { ...rest } = props;
+  const [priceData, setPriceData] = useState(lineChartDataTotalSpent([]))
+  const [dateData, setDateData] = useState(lineChartOptionsTotalSpent([]))
+
+  const [state, setState] = useState({
+    selection: "one_year"
+  })
   useEffect(() => {
     console.log("HIII: ",prices)
+    setPriceData(lineChartDataTotalSpent(prices))
   }, [prices])
+
+  useEffect(() => {
+    console.log(dates)
+    setDateData(lineChartOptionsTotalSpent(dates))
+  }, [dates])
+
+  useEffect(() => {
+    console.log(priceData)
+  }, [priceData])
+
+  useEffect(() => {
+    console.log(dateData)
+  }, [dateData])
+
+  const updateData = (timeline) => {
+    setState({
+      selection: timeline
+    })
+  
+    switch (timeline) {
+      case 'one_month':
+        ApexCharts.exec(
+          'area-datetime',
+          'zoomX',
+          new Date('28 Jan 2013').getTime(),
+          new Date('27 Feb 2013').getTime()
+        )
+        ApexCharts.exec("")
+        break
+      case 'six_months':
+        ApexCharts.exec(
+          'area-datetime',
+          'zoomX',
+          new Date('27 Sep 2012').getTime(),
+          new Date('27 Feb 2013').getTime()
+        )
+        break
+      case 'one_year':
+        ApexCharts.exec(
+          'area-datetime',
+          'zoomX',
+          new Date('27 Feb 2012').getTime(),
+          new Date('27 Feb 2013').getTime()
+        )
+        break
+      case 'ytd':
+        ApexCharts.exec(
+          'area-datetime',
+          'zoomX',
+          new Date('01 Jan 2013').getTime(),
+          new Date('27 Feb 2013').getTime()
+        )
+        break
+      case 'all':
+        ApexCharts.exec(
+          'area-datetime',
+          'zoomX',
+          new Date('23 Jan 2012').getTime(),
+          new Date('27 Feb 2013').getTime()
+        )
+        break
+      default:
+    }
+  }
+
+  const opts = {
+    options: {
+      chart: {
+        id: 'area-datetime',
+        type: 'area',
+        height: 350,
+        zoom: {
+          autoScaleYaxis: true
+        }
+      },
+      // grid: {
+      //   row: {
+      //     colors: ['#FFFF']
+      //   },
+      //   column: {
+      //     colors: ['#FFFF']
+      //   }
+      // },
+      noData: {
+        text: "No Data"
+      },
+      dataLabels: {
+        enabled: false
+      },
+      markers: {
+        size: 0,
+        style: 'hollow',
+      },
+      xaxis: {
+        type: 'datetime',
+        // min: new Date('01 Mar 1999').getTime(),
+        tickAmount: 6,
+        labels: {
+          style: {
+            color: "#FFFFFF"
+          }
+        }
+      },
+      tooltip: {
+        x: {
+          format: 'dd MMM yyyy'
+        }
+      },
+      // colors: ["#ffffff"],
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.9,
+          stops: [0, 100]
+        }
+      },
+    },
+  
+  
+    selection: 'one_year',
+  
+  };
+
 
   // Chakra Color Mode
 
@@ -56,14 +191,61 @@ export default function TotalSpent({prices, dates, ...props}) {
             bg={boxBg}
             fontSize='sm'
             fontWeight='500'
+            m="4px"
             color={textColorSecondary}
+            onClick={() => {
+              updateData("one_month")
+            }}
             borderRadius='7px'>
-            <Icon
-              as={MdOutlineCalendarToday}
-              color={textColorSecondary}
-              me='4px'
-            />
-            This month
+            1M
+          </Button>
+          <Button
+            bg={boxBg}
+            fontSize='sm'
+            fontWeight='500'
+            m="4px"
+            color={textColorSecondary}
+            onClick={() => {
+              updateData("six_month")
+            }}
+            borderRadius='7px'>
+            6M
+          </Button>
+          <Button
+            bg={boxBg}
+            fontSize='sm'
+            fontWeight='500'
+            m="4px"
+            color={textColorSecondary}
+            onClick={() => {
+              updateData("one_year")
+            }}
+            borderRadius='7px'>
+            1Y
+          </Button>
+          <Button
+            bg={boxBg}
+            fontSize='sm'
+            fontWeight='500'
+            m="4px"
+            color={textColorSecondary}
+            onClick={() => {
+              updateData("ytd")
+            }}
+            borderRadius='7px'>
+            YTD
+          </Button>
+          <Button
+            bg={boxBg}
+            fontSize='sm'
+            fontWeight='500'
+            m="4px"
+            color={textColorSecondary}
+            onClick={() => {
+              updateData("all")
+            }}
+            borderRadius='7px'>
+            ALL
           </Button>
           <Button
             ms='auto'
@@ -83,44 +265,14 @@ export default function TotalSpent({prices, dates, ...props}) {
         </Flex>
       </Flex>
       <Flex w='100%' flexDirection={{ base: "column", lg: "row" }}>
-        <Flex flexDirection='column' me='20px' mt='28px'>
-          <Text
-            color={textColor}
-            fontSize='34px'
-            textAlign='start'
-            fontWeight='700'
-            lineHeight='100%'>
-            $37.5K
-          </Text>
-          <Flex align='center' mb='20px'>
-            <Text
-              color='secondaryGray.600'
-              fontSize='sm'
-              fontWeight='500'
-              mt='4px'
-              me='12px'>
-              Total Spent
-            </Text>
-            <Flex align='center'>
-              <Icon as={RiArrowUpSFill} color='green.500' me='2px' mt='2px' />
-              <Text color='green.500' fontSize='sm' fontWeight='700'>
-                +2.45%
-              </Text>
-            </Flex>
-          </Flex>
-
-          <Flex align='center'>
-            <Icon as={IoCheckmarkCircle} color='green.500' me='4px' />
-            <Text color='green.500' fontSize='md' fontWeight='700'>
-              On track
-            </Text>
-          </Flex>
-        </Flex>
-        <Box minH='260px' minW='75%' mt='auto'>
-          <LineChart
-            chartData={lineChartDataTotalSpent(prices)}
-            chartOptions={lineChartOptionsTotalSpent}
-          />
+        
+        <Box minH='260px' minW='100%' mt='auto'>
+          {prices.length > 0 && (
+            <ReactApexChart options={opts.options} series={[{data: prices}]} type="area" height={350} />
+          )}
+          {prices.length == 0 && (
+            <ReactApexChart options={opts.options} series={[{data: []}]} type="area" height={350} />
+          )}
         </Box>
       </Flex>
     </Card>

@@ -21,6 +21,7 @@ import { db } from 'utils/firebase';
 import { useState } from 'react';
 import { RangeDatepicker } from 'chakra-dayzed-datepicker';
 import { MdChevronRight } from 'react-icons/md';
+import { toast } from 'react-toastify';
   // Custom icons
 
 
@@ -48,13 +49,30 @@ export default function FilterBar({setDates, setPrices, ...props}) {
             const filteredDs = []
             const filteredPs = []
             const snap = snapshot.val()
+            
             for(let val in snap) {
                 let d = parseInt(val)
                 if(d >= from && d <= to) {
-                    filteredDs.push(new Date(d))
-                    filteredPs.push(parseInt(snap[val].price))
+                    // filteredDs.push(new Date(d).toUTCString())
+                    filteredDs.push(d)
+
+                    filteredPs.push([d, parseFloat(snap[val].price).toFixed(2)])
                 }
 
+            }
+            if(filteredPs.length == 0) {
+                console.log("No Available")
+                toast.error('No Data Available', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                    })
+                    return
             }
             setDates(filteredDs)
             setPrices(filteredPs)

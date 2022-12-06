@@ -251,93 +251,162 @@ export const pieChartData = [63, 25, 12];
 
 // Total Spent Default
 
-export const lineChartDataTotalSpent = (currency, prices) => { 
+export const lineChartDataTotalSpent = (prices) => { 
     return [
     {
         name: "Currency",
-        data: prices,
+        data: [1,2,3,4,5,6,2],
     },
 ];
 }
 
+
 export const lineChartOptionsTotalSpent = (dates) =>{
     return {
-    chart: {
-        toolbar: {
-            show: false,
-        },
-        dropShadow: {
-            enabled: true,
-            top: 13,
-            left: 0,
-            blur: 10,
-            opacity: 0.1,
-            color: "#4318FF",
-        },
-    },
-    colors: ["#4318FF", "#39B8FF"],
-    markers: {
-        size: 0,
-        colors: "white",
-        strokeColors: "#7551FF",
-        strokeWidth: 3,
-        strokeOpacity: 0.9,
-        strokeDashArray: 0,
-        fillOpacity: 1,
-        discrete: [],
-        shape: "circle",
-        radius: 2,
-        offsetX: 0,
-        offsetY: 0,
-        showNullDataPoints: true,
-    },
-    tooltip: {
-        theme: "dark",
-    },
-    dataLabels: {
-        enabled: false,
-    },
-    stroke: {
-        curve: "smooth",
-        type: "line",
-    },
-    xaxis: {
-        type: "datetime",
-        categories: dates,
-        labels: {
-            style: {
-                colors: "#A3AED0",
-                fontSize: "12px",
-                fontWeight: "500",
-            },
-        },
-        axisBorder: {
-            show: false,
-        },
-        axisTicks: {
-            show: false,
-        },
-    },
-    yaxis: {
-        show: true,
-        labels: {
-            style: {
-                colors: "#A3AED0",
-                fontSize: "12px",
-                fontWeight: "500",
-            },
-        },
-    },
-    legend: {
-        show: false,
-    },
-    grid: {
-        show: false,
-        column: {
-            color: ["#7551FF", "#39B8FF"],
-            opacity: 0.5,
-        },
-    },
-    color: ["#7551FF", "#39B8FF"],
-};
-}
+        chart: {
+            id: 'area-datetime',
+            type: 'area',
+            height: 350,
+            zoom: {
+              autoScaleYaxis: true
+            }
+          },
+          annotations: {
+            yaxis: [{
+              y: 30,
+              borderColor: '#999',
+              label: {
+                show: true,
+                text: 'Support',
+                style: {
+                  color: "#fff",
+                  background: '#00E396'
+                }
+              }
+            }],
+            xaxis: [{
+              x: new Date('14 Nov 2012').getTime(),
+              borderColor: '#999',
+              yAxisIndex: 0,
+              label: {
+                show: true,
+                text: 'Rally',
+                style: {
+                  color: "#fff",
+                  background: '#775DD0'
+                }
+              }
+            }]
+          },
+          dataLabels: {
+            enabled: false
+          },
+          markers: {
+            size: 0,
+            style: 'hollow',
+          },
+          xaxis: {
+            type: 'datetime',
+            min: new Date('01 Mar 2012').getTime(),
+            tickAmount: 6,
+          },
+          tooltip: {
+            x: {
+              format: 'dd MMM yyyy'
+            }
+          },
+          fill: {
+            type: 'gradient',
+            gradient: {
+              shadeIntensity: 1,
+              opacityFrom: 0.7,
+              opacityTo: 0.9,
+              stops: [0, 100]
+            }
+          }
+        }
+    }
+
+
+
+// export const lineChartOptionsTotalSpent = (dates) =>{
+//     return {
+//     chart: {
+//         toolbar: {
+//             show: false,
+//         },
+//         dropShadow: {
+//             enabled: true,
+//             top: 13,
+//             left: 0,
+//             blur: 10,
+//             opacity: 0.1,
+//             color: "#4318FF",
+//         },
+//     },
+//     colors: ["#4318FF", "#39B8FF"],
+//     markers: {
+//         size: 0,
+//         colors: "white",
+//         strokeColors: "#7551FF",
+//         strokeWidth: 3,
+//         strokeOpacity: 0.9,
+//         strokeDashArray: 0,
+//         fillOpacity: 1,
+//         discrete: [],
+//         shape: "circle",
+//         radius: 2,
+//         offsetX: 0,
+//         offsetY: 0,
+//         showNullDataPoints: true,
+//     },
+//     tooltip: {
+//         theme: "dark",
+//     },
+//     dataLabels: {
+//         enabled: false,
+//     },
+//     stroke: {
+//         curve: "smooth",
+//         type: "line",
+//     },
+//     xaxis: {
+//         type: "numeric",
+//         categories: dates,
+//         labels: {
+//             style: {
+//                 colors: "#A3AED0",
+//                 fontSize: "12px",
+//                 fontWeight: "500",
+//             },
+//         },
+//         axisBorder: {
+//             show: false,
+//         },
+//         axisTicks: {
+//             show: false,
+//         },
+//     },
+//     yaxis: {
+//         show: true,
+//         labels: {
+//             style: {
+//                 colors: "#A3AED0",
+//                 fontSize: "12px",
+//                 fontWeight: "500",
+//             },
+//         },
+//     },
+//     legend: {
+//         show: false,
+//     },
+//     grid: {
+//         show: false,
+//         column: {
+//             color: ["#7551FF", "#39B8FF"],
+//             opacity: 0.5,
+//         },
+//     },
+//     color: ["#7551FF", "#39B8FF"],
+// };
+// }
