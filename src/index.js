@@ -8,6 +8,8 @@ import RTLLayout from "layouts/rtl";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "theme/theme";
 import { ThemeEditorProvider } from "@hypertheme-editor/chakra-ui";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
   <ChakraProvider theme={theme}>
@@ -21,6 +23,18 @@ ReactDOM.render(
             <Redirect from='/' to='/admin' />
           </Switch>
         </HashRouter>
+        <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        />
       </ThemeEditorProvider>
     </React.StrictMode>
   </ChakraProvider>,

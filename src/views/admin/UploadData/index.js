@@ -1,4 +1,4 @@
-import { Box, InputLeftElement, SimpleGrid } from "@chakra-ui/react";
+import { Box, CircularProgress, CircularProgressLabel, InputLeftElement, propNames, SimpleGrid } from "@chakra-ui/react";
 import {
     Button,
     Flex,
@@ -10,17 +10,12 @@ import {
     Text,
     useColorModeValue,
 } from "@chakra-ui/react";
-import {
-    collection,
-    doc,
-    getDocs,
-    setDoc,
-    writeBatch,
-} from "firebase/firestore";
 import React, { useMemo, useRef, useState } from "react";
 import { MdFileUpload } from "react-icons/md";
 import { db } from "utils/firebase";
 import Papa, { parse } from "papaparse";
+import { ref, set } from "firebase/database";
+import { toast, ToastContainer } from 'react-toastify';
 
 const allowedExtensions = ["csv"];
 
@@ -34,6 +29,7 @@ const UploadFileForm = () => {
     const [currencyData, setCurrencyData] = useState([]);
     const textColor = useColorModeValue("navy.700", "white");
     const [isUploading, setIsUploading] = useState(false);
+    const [currentProgress, setCurrentProgress] = useState(0)
 
     const handleSubmit = async () => {
         try {
@@ -49,30 +45,78 @@ const UploadFileForm = () => {
                 console.log(parsedData);
                 const columns = Object.keys(parsedData[0]);
                 console.log(columns);
-                const batch = writeBatch(db);
+                // const batch = writeBatch(db);
+                const obj = {}
+                const totalRecords = parsedData.length * 51;
+                let done = 0;
+                setCurrentProgress(0)
+                let promises = []
+                let currencies = new Set()
                 for (let i = 0; i < parsedData.length; i++) {
                     if (parsedData[i]["Date"]) {
-                        console.log(parsedData[i]);
                         var time = new Date(parsedData[i]["Date"])
                             .getTime()
                             .toString();
-                        time = "t" + time;
-                        console.log(time);
-                        // const coll = collection(db, time);
-                        batch.set(doc(db, time + "/data"), parsedData[i]);
-                        console.log(parsedData[i]);
-                        // for (const prop in parsedData[i]) {
-                        //     if (prop !== "Date") {
-                        //         batch.set(doc(db, time), {
-                        //             price: parsedData[i][prop],
-                        //         });
-                        //     }
-                        // }
+                        for (const prop in parsedData[i]) {
+                            let temp = prop
+                            temp = temp.trim()
+                            let newProp = temp.split(" ").pop();
+                            newProp.slice(1, -1)
+                            if (newProp && newProp !== "Date") {
+                                try{
+                                    if(parsedData[i][prop]) {
+                                        currencies.add(newProp)
+                                        promises.push(set(ref(db, newProp + "/" + time), {
+                                            price: parsedData[i][prop]
+                                        }))
+                                        // .then(val => {
+                                        //     done += 1;
+                                        //     setCurrentProgress(Math.round((done/totalRecords)*100))
+                                        // })
+                                        // .catch(err => {
+                                        //     console.log(err)
+                                        // })
+                                    }
+                                    else {
+                                        done += 1
+                                    }
+                                }
+                                catch(err) {
+                                    console.log("ERRRR")
+                                    console.log(err)
+                                }
+                            }
+                            else {
+                                done += 1;
+                            }
+                        }
+                    }
+                    else {
+                        console.log("No Date")
                     }
                     // batch.set(doc(db, parsedData[i].))
                 }
-                await batch.commit();
-                console.log("Saved Data");
+                await set(ref(db, "currencies" ), Array.from(currencies))
+                Promise.all(promises).then(() => {
+                    console.log("Uploaded")
+                    setIsUploading(false)
+                    toast.success('🦄 Uploaded', {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                        });
+                        setData({
+                            file: null
+                        })
+                })
+                // await batch.commit();
+                // console.log("Saved Data");
+                // setCurrentProgress(100)
             };
             reader.readAsText(data.file);
 
@@ -87,6 +131,7 @@ const UploadFileForm = () => {
 
     const handleFileInput = (e) => {
         // Check if user has entered the file
+
         if (e.target.files.length) {
             const inputFile = e.target.files[0];
 
@@ -118,34 +163,6 @@ const UploadFileForm = () => {
             mb={{ base: "20px", md: "auto" }}
         >
             <FormControl>
-                <FormLabel
-                    display="flex"
-                    ms="4px"
-                    fontSize="sm"
-                    fontWeight="500"
-                    color={textColor}
-                    mb="8px"
-                >
-                    Name<Text color={brandStars}>*</Text>
-                </FormLabel>
-                <Input
-                    isRequired={true}
-                    variant="auth"
-                    fontSize="sm"
-                    ms={{ base: "0px", md: "0px" }}
-                    type="text"
-                    placeholder="eg. jon doe"
-                    mb="24px"
-                    fontWeight="500"
-                    size="lg"
-                    onChange={(e) => {
-                        setData({
-                            ...data,
-                            name: e.target.value,
-                        });
-                    }}
-                    value={data.name}
-                />
 
                 <FormLabel
                     ms="4px"
@@ -153,26 +170,32 @@ const UploadFileForm = () => {
                     fontWeight="500"
                     color={textColor}
                     display="flex"
+                    style={{
+                        cursor: "pointer"
+                    }}
                 >
                     Image<Text color={brandStars}>*</Text>
                 </FormLabel>
 
-                <InputGroup>
+                <InputGroup
+                >
                     <InputLeftElement
                         pointerEvents="none"
                         children={<Icon as={MdFileUpload} />}
+                        cursor="pointer"
                     />
                     <input
                         type="file"
                         ref={inputRef}
-                        style={{ display: "none" }}
+                        style={{ display: "none", cursor: "pointer" }}
                         onChange={handleFileInput}
                     ></input>
                     <Input
                         placeholder={"Firmware Image ..."}
                         variant="auth"
                         onClick={() => inputRef.current.click()}
-                        value={data.image ? data.image.name : "Select File"}
+                        value={data.file ? data.file.name : "Select File"}
+                        cursor="pointer"
                     />
                 </InputGroup>
 
@@ -183,9 +206,13 @@ const UploadFileForm = () => {
                     w="100%"
                     h="50"
                     mb="24px"
+                    mt="20px"
                     onClick={handleSubmit}
+                    // disabled={isUploading}
                 >
-                    Create
+                    {isUploading ? (
+                        <CircularProgress isIndeterminate color='green.300' />
+                    ) : "Create"}
                 </Button>
             </FormControl>
         </Flex>

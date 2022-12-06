@@ -15,13 +15,17 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { MdBarChart, MdOutlineCalendarToday } from "react-icons/md";
 // Assets
 import { RiArrowUpSFill } from "react-icons/ri";
+import { useEffect } from 'react';
 import {
   lineChartDataTotalSpent,
   lineChartOptionsTotalSpent,
 } from "variables/charts";
 
-export default function TotalSpent(props) {
+export default function TotalSpent({prices, dates, ...props}) {
   const { ...rest } = props;
+  useEffect(() => {
+    console.log("HIII: ",prices)
+  }, [prices])
 
   // Chakra Color Mode
 
@@ -114,7 +118,7 @@ export default function TotalSpent(props) {
         </Flex>
         <Box minH='260px' minW='75%' mt='auto'>
           <LineChart
-            chartData={lineChartDataTotalSpent}
+            chartData={lineChartDataTotalSpent(prices)}
             chartOptions={lineChartOptionsTotalSpent}
           />
         </Box>

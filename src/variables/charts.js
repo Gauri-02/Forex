@@ -251,18 +251,17 @@ export const pieChartData = [63, 25, 12];
 
 // Total Spent Default
 
-export const lineChartDataTotalSpent = [
+export const lineChartDataTotalSpent = (currency, prices) => { 
+    return [
     {
-        name: "Revenue",
-        data: [50, 64, 48, 66, 49, 68],
-    },
-    {
-        name: "Profit",
-        data: [30, 40, 24, 46, 20, 46],
+        name: "Currency",
+        data: prices,
     },
 ];
+}
 
-export const lineChartOptionsTotalSpent = {
+export const lineChartOptionsTotalSpent = (dates) =>{
+    return {
     chart: {
         toolbar: {
             show: false,
@@ -303,8 +302,8 @@ export const lineChartOptionsTotalSpent = {
         type: "line",
     },
     xaxis: {
-        type: "numeric",
-        categories: ["SEP", "OCT", "NOV", "DEC", "JAN", "FEB"],
+        type: "datetime",
+        categories: dates,
         labels: {
             style: {
                 colors: "#A3AED0",
@@ -341,3 +340,4 @@ export const lineChartOptionsTotalSpent = {
     },
     color: ["#7551FF", "#39B8FF"],
 };
+}
